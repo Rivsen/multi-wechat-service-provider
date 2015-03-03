@@ -6,6 +6,7 @@ use Silex;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Rswork\Silex\Wechat\Wechat;
 
 class WechatServiceProvider implements ServiceProviderInterface
 {
