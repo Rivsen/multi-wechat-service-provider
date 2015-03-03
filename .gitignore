@@ -1,0 +1,7 @@
+/.DS_Store
+/.idea
+*.php~
+*.swap
+*.swp
+composer.lock
+vendor/

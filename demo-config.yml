@@ -1,0 +1,10 @@
+wechat:
+    demochat:
+        name: Demo
+        appid: your wechat appid
+        secret: your wechat secret
+        fields:
+            debug_openid: fake_openid
+            auth_userinfo: "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_userinfo&state=123#wechat_redirect"
+            auth_base: "https://open.weixin.qq.com/connect/oauth2/authorize?appid=%s&redirect_uri=%s&response_type=code&scope=snsapi_base&state=123#wechat_redirect"
+            foo: bar

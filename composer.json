@@ -1,0 +1,20 @@
+{
+    "name": "rswork/multi-wechat-service-provider",
+    "description": "multi wechat service injection for silex",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Rivsen Tan",
+            "email": "rivsen1003@gmail.com"
+        }
+    ],
+    "require": {
+        "php":   ">=5.3",
+        "silex/silex" : "~1.0",
+        "symfony/monolog-bridge": "~2.6",
+        "monolog/monolog": "~1.12"
+    },
+    "autoload": {
+        "psr-4": { "Rswork\\Silex\\": "src" }
+    }
+}
