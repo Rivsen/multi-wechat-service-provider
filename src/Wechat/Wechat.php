@@ -161,6 +161,28 @@ class Wechat extends \Pimple
                 $this['scope'] = $data['scope'];
                 $this['expires_in'] = $data['expires_in'];
                 $this['expires_at'] = time() + $data['expires_at'];
+
+                if( $this['scope'] == 'snsapi_userinfo' ) {
+                    $info = $this->requestUserinfo();
+
+                    if( $info ) {
+                        $this['nickname'] = $info['nickname'];
+                        $this['sex'] = $info['sex'];
+                        $this['language'] = $info['language'];
+                        $this['city'] = $info['city'];
+                        $this['province'] = $info['province'];
+                        $this['country'] = $info['country'];
+                        $this['headimgurl'] = $info['headimgurl'];
+                    } else {
+                        $this['nickname'] = null;
+                        $this['sex'] = null;
+                        $this['language'] = null;
+                        $this['city'] = null;
+                        $this['province'] = null;
+                        $this['country'] = null;
+                        $this['headimgurl'] = null;
+                    }
+                }
             }
         } else {
             return $this->app->redirect( $this->createRedirectUrl($request->get('_route'), $querys) );
@@ -169,10 +191,37 @@ class Wechat extends \Pimple
         $this->addDebug('request openid is '.$this->openid);
     }
 
+    protected function requestUserinfo()
+    {
+        /**
+        {
+            "openid": "oLVPpjqs2BhvzwPj5A-vTYAX4GLc",
+            "nickname": "方倍",
+            "sex": 1,
+            "language": "zh_CN",
+            "city": "深圳",
+            "province": "广东",
+            "country": "中国",
+            "headimgurl": "http://wx.qlogo.cn/mmopen/JcDicrZBlREhnNXZRudod9PmibRkIs5K2f1tUQ7lFjC63pYHaXGxNDgMzjGDEuvzYZbFOqtUXaxSdoZG6iane5ko9H30krIbzGv/0",
+        }
+         */
+
+        $url = "https://api.weixin.qq.com/sns/userinfo?access_token={$this['access_token']}&openid={$this->openid}";
+
+        try{
+            $info = file_get_contents( $url );
+            $this->addDebug( 'get wechat userinfo response json data: '.$info );
+            $info = json_decode($info, true);
+        } catch( \Exception $e ) {
+            $this->addError($e->getCode() . ', get wechat userinfo response error: ' . $e->getMessage());
+            $info = false;
+        }
+
+        return $info;
+    }
+
     protected function requestCode()
     {
-        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={$this->appid}&secret={$this->secret}&code={$this->code}&grant_type=authorization_code";
-
         /**
         {
             "access_token":"ACCESS_TOKEN",
@@ -182,6 +231,7 @@ class Wechat extends \Pimple
             "scope":"SCOPE"
         }
          */
+        $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid={$this->appid}&secret={$this->secret}&code={$this->code}&grant_type=authorization_code";
 
         try {
             $json = file_get_contents($url);
@@ -189,6 +239,7 @@ class Wechat extends \Pimple
             $json = json_decode($json, true);
         } catch( \Exception $e ) {
             $this->addError( 'get wechat response json data faild.' );
+            $this->addError($e->getCode() . ', get wechat response error: ' . $e->getMessage());
             $json = false;
         }
 
